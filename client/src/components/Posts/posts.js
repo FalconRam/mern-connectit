@@ -5,7 +5,7 @@ import "../../index.css";
 import Post from "./Post/post";
 import useStyles from "./styles";
 
-const Posts = () => {
+const Posts = ({ setCurrentId }) => {
   const classes = useStyles();
   const posts = useSelector((state) => state.posts);
 
@@ -24,7 +24,8 @@ const Posts = () => {
     >
       {posts.map((post) => (
         <Grid key={post._id} item xs={12} sm={6}>
-          <Post post={post} />
+          {/* Props Drilling */}
+          <Post post={post} setCurrentId={setCurrentId} />
         </Grid>
       ))}
     </Grid>
