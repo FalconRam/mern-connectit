@@ -9,6 +9,8 @@ import { createPost, updatePost } from "../../actions/posts";
 
 const Form = ({ currentId, setCurrentId }) => {
   const classes = useStyles();
+
+  // Gets the Post by ID that is clicked to Edit
   const post = useSelector((state) =>
     currentId ? state.posts.find((p) => p._id === currentId) : null
   );
@@ -22,19 +24,13 @@ const Form = ({ currentId, setCurrentId }) => {
     selectedField: "",
   });
 
+  // populate the previous data in form
   useEffect(() => {
     if (post) setPostData(post);
   }, [post]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (currentId) {
-      dispatch(updatePost(currentId, postData));
-    } else {
-      dispatch(createPost(postData));
-    }
-
+  const clear = () => {
+    setCurrentId(0);
     setPostData({
       creator: "",
       title: "",
@@ -44,14 +40,15 @@ const Form = ({ currentId, setCurrentId }) => {
     });
   };
 
-  const clear = () => {
-    setPostData({
-      creator: "",
-      title: "",
-      message: "",
-      tags: "",
-      selectedField: "",
-    });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (currentId) {
+      dispatch(updatePost(currentId, postData));
+    } else {
+      dispatch(createPost(postData));
+    }
+    clear();
   };
 
   return (
@@ -62,7 +59,9 @@ const Form = ({ currentId, setCurrentId }) => {
         className={`${classes.root} ${classes.form}`}
         onSubmit={handleSubmit}
       >
-        <Typography variant="h6">Create a Post</Typography>
+        <Typography variant="h6">
+          {currentId ? "Update a Post" : "Create a Post"}
+        </Typography>
         <TextField
           name="creator"
           variant="outlined"
@@ -115,7 +114,7 @@ const Form = ({ currentId, setCurrentId }) => {
           size="large"
           color="primary"
         >
-          Submit
+          {currentId ? "Update" : "Submit"}
         </Button>
         <Button
           className={classes.buttonSubmit}
@@ -124,7 +123,7 @@ const Form = ({ currentId, setCurrentId }) => {
           color="secondary"
           onClick={clear}
         >
-          Reset
+          {currentId ? "Cancel" : "Reset"}
         </Button>
       </form>
     </Paper>

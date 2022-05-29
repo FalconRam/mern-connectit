@@ -16,7 +16,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(getPosts());
-  }, [dispatch]);
+  }, [currentId, dispatch]);
 
   return (
     <Container maxwidth="lg">
@@ -24,12 +24,7 @@ const App = () => {
         <Typography className={classes.heading} variant="h2" align="center">
           ConnectIt
         </Typography>
-        <img
-          className={classes.images}
-          src={logo}
-          alt="connectit"
-          height="60"
-        />
+        <img className={classes.image} src={logo} alt="connectit" height="60" />
       </AppBar>
       <Grow in>
         <Container>
