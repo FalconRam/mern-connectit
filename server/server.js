@@ -23,7 +23,7 @@ app.use(cors());
 
 app.use("/posts", postRoutes);
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT;
 const dbUri = process.env.CONNECTION_URL;
 
 mongoose
