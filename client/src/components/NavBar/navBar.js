@@ -1,13 +1,31 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Typography, AppBar, Toolbar, Button, Avatar } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
+import { LOGOUT } from "../../constants/actionTypes";
 import logo from "../../images/logo.png";
 import useStyles from "./styles";
 
 const Navbar = () => {
   const classes = useStyles();
-  const user = null;
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const location = useLocation();
+  
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
+
+  useEffect(() => {
+    const token = user?.token;
+
+    setUser(JSON.parse(localStorage.getItem("profile")));
+  }, [location]);
+
+  const logout = () => {
+    dispatch({ type: LOGOUT });
+    setUser(null);
+    history.push("/auth");
+  };
 
   return (
     <AppBar className={classes.appBar} position="static" color="inherit">
@@ -28,19 +46,19 @@ const Navbar = () => {
           <div className={classes.profile}>
             <Avatar
               className={classes.purple}
-              alt={user.result.name}
-              src={user.result.imageUrl}
+              alt={user.decodedUserPayload.name}
+              src={user.decodedUserPayload.picture}
             >
-              {user.result.name.charAt(0).toUpperCase()}
+              {user.decodedUserPayload.name.charAt(0).toUpperCase()}
             </Avatar>
             <Typography className={classes.userName} variant="h5">
-              {user.result.name}
+              {user.decodedUserPayload.name}
             </Typography>
             <Button
               variant="contained"
               className={classes.logout}
               color="secondary"
-              onClick={() => {}}
+              onClick={logout}
             >
               Logout
             </Button>

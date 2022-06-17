@@ -26,21 +26,23 @@ const Input = ({
         type={type}
         autofoucs={autofoucs}
         InputProps={
-          name === "password" && {
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={
-                    handleShowPassword
-                      ? handleShowPassword
-                      : handleShowConfirmPassword
-                  }
-                >
-                  {type === "password" ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }
+          name === "password"
+            ? {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={
+                        handleShowPassword
+                          ? handleShowPassword
+                          : handleShowConfirmPassword
+                      }
+                    >
+                      {type === "password" ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }
+            : null
         }
       />
     </Grid>

@@ -7,13 +7,25 @@ import {
   Grid,
   Button,
 } from "@material-ui/core";
+import jwt_decode from "jwt-decode";
 import LockOutlinedIcon from "@material-ui/icons/LockOpenOutlined";
+// import GoogleLogin from "react-google-login";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
+
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 import useStyles from "./styles";
 import Input from "./input";
+import Icon from "./icon";
+import { AUTH } from "../../constants/actionTypes";
 
-const Auth = ({}) => {
+const Auth = () => {
   const classes = useStyles();
+
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   const [isSignUp, setIsSignUp] = useState(false);
 
@@ -33,6 +45,44 @@ const Auth = ({}) => {
     setIsSignUp(!isSignUp);
     // handleShowPassword(false);
     // handleShowConfirmPassword(false);
+  };
+
+  const googleSuccess = async (res) => {
+    // const result = res?.profileObj; // ?. optional chaining operator - which will not through error, if it doesn't have access to res..It will just show undefined
+    // const token = res?.tokenId;
+    // console.log(res);
+
+    const jwtCred = res.credential;
+    const token = jwtCred.substr(0, 102);
+    // const jwtClientId = res.clientId;
+    // console.log(jwtClientId);
+    // console.log(jwtCred);
+    // const jwtCredentialPayload = jwtCred.substr(103, 739);
+    // const jwtCredentialVerifySignature = jwtCred.substr(740, 1185);
+    // const authResult = {
+    //   jwtCredentialHeader,
+    //   jwtCredentialPayload,
+    //   jwtCredentialVerifySignature,
+    // };
+    // console.log(authResult);
+
+    const decodedUserPayload = jwt_decode(jwtCred);
+    // console.log(decodedUserPayload);
+
+    try {
+      dispatch({
+        type: AUTH,
+        data: { decodedUserPayload, token },
+      });
+      history.push("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const googleFailure = (error) => {
+    console.log(error);
+    alert("Google SignIn Failed.Try again later..!");
   };
 
   return (
@@ -100,7 +150,6 @@ const Auth = ({}) => {
               />
             )}
           </Grid>
-
           <Button
             type="submit"
             fullWidth
@@ -110,7 +159,48 @@ const Auth = ({}) => {
           >
             {isSignUp ? "Sign Up" : "Log In"}
           </Button>
-          <Grid container justify="flex-end">
+          <Grid container justifyContent="center">
+            {/* <GoogleLogin
+              clientId="1020798232424-jq5793prql6ff6jpmt6dkc7q20hf6pvl.apps.googleusercontent.com"
+              render={(renderProps) => (
+                <Button
+                  className={classes.googleButton}
+                  color="primary"
+                  fullWidth
+                  onClick={renderProps.onClick}
+                  disabled={renderProps.disabled}
+                  startIcon={<Icon />}
+                  variant="contained"
+                >
+                  Sign In
+                </Button>
+              )}
+              onSuccess={googleSuccess}
+              onFailure={googleFailure}
+              cookiePolicy="single_host_origin"
+            /> */}
+            <GoogleOAuthProvider clientId="1020798232424-jq5793prql6ff6jpmt6dkc7q20hf6pvl.apps.googleusercontent.com">
+              <GoogleLogin
+                render={(renderProps) => (
+                  <Button
+                    classsName={classes.googleButton}
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    onClick={renderProps.onClick}
+                    disabled={renderProps.disabled}
+                    startIcon={<Icon />}
+                  >
+                    Sign In
+                  </Button>
+                )}
+                onSuccess={googleSuccess}
+                onFailure={googleFailure}
+                cookiePolicy={"single_host_origin"}
+              />
+            </GoogleOAuthProvider>
+          </Grid>
+          <Grid container justifyContent="flex-end">
             <Grid item>
               <Button onClick={switchMode} color="primary">
                 {isSignUp
@@ -121,7 +211,6 @@ const Auth = ({}) => {
           </Grid>
           <Grid container>
             <Typography variant="overline" color="error">
-              {" "}
               * field is Required
             </Typography>
           </Grid>
