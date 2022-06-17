@@ -9,7 +9,10 @@ import {
 } from "@material-ui/core";
 import jwt_decode from "jwt-decode";
 import LockOutlinedIcon from "@material-ui/icons/LockOpenOutlined";
-// import GoogleLogin from "react-google-login";
+// import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+// import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+// import Stack from "@mui/material/Stack";
+// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 
@@ -31,6 +34,7 @@ const Auth = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [value, setValue] = useState(new Date());
 
   const handleSubmit = () => {};
 
@@ -111,18 +115,32 @@ const Auth = () => {
                   handleChange={handleChange}
                   half
                 />
-                <Input
+                {/* <Input
                   name="date"
                   label="Date of Birth"
                   handleChange={handleChange}
                   half
-                />
-                <Input
+                /> */}
+                {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <Stack spacing={3}>
+                    <DatePicker
+                      disableFuture
+                      label="Birthday"
+                      openTo="year"
+                      views={["year", "day", "month"]}
+                      value={value}
+                      onChange={handleChange}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </Stack>
+                </LocalizationProvider> */}
+
+                {/* <Input
                   name="location"
                   label="Location"
                   handleChange={handleChange}
                   half
-                />
+                /> */}
               </>
             )}
             <Input
@@ -160,25 +178,6 @@ const Auth = () => {
             {isSignUp ? "Sign Up" : "Log In"}
           </Button>
           <Grid container justifyContent="center">
-            {/* <GoogleLogin
-              clientId="1020798232424-jq5793prql6ff6jpmt6dkc7q20hf6pvl.apps.googleusercontent.com"
-              render={(renderProps) => (
-                <Button
-                  className={classes.googleButton}
-                  color="primary"
-                  fullWidth
-                  onClick={renderProps.onClick}
-                  disabled={renderProps.disabled}
-                  startIcon={<Icon />}
-                  variant="contained"
-                >
-                  Sign In
-                </Button>
-              )}
-              onSuccess={googleSuccess}
-              onFailure={googleFailure}
-              cookiePolicy="single_host_origin"
-            /> */}
             <GoogleOAuthProvider clientId="1020798232424-jq5793prql6ff6jpmt6dkc7q20hf6pvl.apps.googleusercontent.com">
               <GoogleLogin
                 render={(renderProps) => (
