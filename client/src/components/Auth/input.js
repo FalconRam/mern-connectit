@@ -26,7 +26,7 @@ const Input = ({
         type={type}
         autofoucs={autofoucs}
         InputProps={
-          name === "password"
+          name === "password" || name === "confirmPassword"
             ? {
                 endAdornment: (
                   <InputAdornment position="end">

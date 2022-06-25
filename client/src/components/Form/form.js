@@ -9,19 +9,21 @@ import { createPost, updatePost } from "../../actions/posts";
 
 const Form = ({ currentId, setCurrentId }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  
+  const user = JSON.parse(localStorage.getItem("profile"));
 
   // Gets the Post by ID that is clicked to Edit
   const post = useSelector((state) =>
     currentId ? state.posts.find((p) => p._id === currentId) : null
   );
-  const dispatch = useDispatch();
+
 
   const [postData, setPostData] = useState({
-    creator: "",
     title: "",
     message: "",
     tags: "",
-    selectedField: "",
+    selectedFile: "",
   });
 
   // populate the previous data in form
@@ -32,11 +34,10 @@ const Form = ({ currentId, setCurrentId }) => {
   const clear = () => {
     setCurrentId(0);
     setPostData({
-      creator: "",
       title: "",
       message: "",
       tags: "",
-      selectedField: "",
+      selectedFile: "",
     });
   };
 
@@ -44,9 +45,11 @@ const Form = ({ currentId, setCurrentId }) => {
     e.preventDefault();
 
     if (currentId) {
-      dispatch(updatePost(currentId, postData));
+      dispatch(
+        updatePost(currentId, { ...postData, name: user?.result?.name })
+      );
     } else {
-      dispatch(createPost(postData));
+      dispatch(createPost({ ...postData, name: user?.result?.name }));
     }
     clear();
   };
@@ -62,16 +65,6 @@ const Form = ({ currentId, setCurrentId }) => {
         <Typography variant="h6">
           {currentId ? "Update a Post" : "Create a Post"}
         </Typography>
-        <TextField
-          name="creator"
-          variant="outlined"
-          label="Creator"
-          fullWidth
-          value={postData.creator}
-          onChange={(e) =>
-            setPostData({ ...postData, creator: e.target.value })
-          }
-        />
         <TextField
           name="title"
           variant="outlined"
@@ -93,7 +86,7 @@ const Form = ({ currentId, setCurrentId }) => {
         <TextField
           name="tags"
           variant="outlined"
-          label="Tags"
+          label="Tags (comma seperated)"
           fullWidth
           value={postData.tags}
           onChange={(e) =>

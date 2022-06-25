@@ -23,6 +23,7 @@ import useStyles from "./styles";
 import Input from "./input";
 import Icon from "./icon";
 import { AUTH } from "../../constants/actionTypes";
+import { signUp, logIn } from "../../actions/auth";
 
 const Auth = () => {
   const classes = useStyles();
@@ -30,15 +31,18 @@ const Auth = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
   const [isSignUp, setIsSignUp] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [value, setValue] = useState(new Date());
-
-  const handleSubmit = () => {};
-
-  const handleChange = () => {};
 
   const handleShowPassword = () => setShowPassword(!showPassword);
 
@@ -46,37 +50,44 @@ const Auth = () => {
     setShowConfirmPassword(!showConfirmPassword);
 
   const switchMode = () => {
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
     setIsSignUp(!isSignUp);
-    // handleShowPassword(false);
-    // handleShowConfirmPassword(false);
+    setShowPassword(false);
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // step : 1 - dispatching the action ; check step to in actions/auth
+    isSignUp
+      ? dispatch(signUp(formData, history))
+      : dispatch(logIn(formData, history));
   };
 
   const googleSuccess = async (res) => {
-    // const result = res?.profileObj; // ?. optional chaining operator - which will not through error, if it doesn't have access to res..It will just show undefined
-    // const token = res?.tokenId;
-    // console.log(res);
+  
+    //{clientId, credential : { token, data, signature}, select_by} = res
+    console.log(res);
 
-    const jwtCred = res.credential;
-    const token = jwtCred.substr(0, 102);
-    // const jwtClientId = res.clientId;
-    // console.log(jwtClientId);
-    // console.log(jwtCred);
-    // const jwtCredentialPayload = jwtCred.substr(103, 739);
-    // const jwtCredentialVerifySignature = jwtCred.substr(740, 1185);
-    // const authResult = {
-    //   jwtCredentialHeader,
-    //   jwtCredentialPayload,
-    //   jwtCredentialVerifySignature,
-    // };
-    // console.log(authResult);
-
-    const decodedUserPayload = jwt_decode(jwtCred);
-    // console.log(decodedUserPayload);
+    const result = jwt_decode(res.credential);
+    console.log(result);
+    const token = res.credential.substr(0, 102);
+    console.log(token);
 
     try {
       dispatch({
         type: AUTH,
-        data: { decodedUserPayload, token },
+        data: { result, token },
       });
       history.push("/");
     } catch (error) {
@@ -121,20 +132,6 @@ const Auth = () => {
                   handleChange={handleChange}
                   half
                 /> */}
-                {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <Stack spacing={3}>
-                    <DatePicker
-                      disableFuture
-                      label="Birthday"
-                      openTo="year"
-                      views={["year", "day", "month"]}
-                      value={value}
-                      onChange={handleChange}
-                      renderInput={(params) => <TextField {...params} />}
-                    />
-                  </Stack>
-                </LocalizationProvider> */}
-
                 {/* <Input
                   name="location"
                   label="Location"
@@ -158,7 +155,7 @@ const Auth = () => {
             />
             {isSignUp && (
               <Input
-                name="password"
+                name="confirmPassword"
                 label="Confirm Password"
                 handleChange={handleChange}
                 // handleShowPassword={handleShowPassword}

@@ -22,13 +22,11 @@ export const getPostsById = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {
-  const { title, message, selectedFile, creator, tags } = req.body;
+  const post = req.body;
   const newPost = new PostMessage({
-    title,
-    message,
-    selectedFile,
-    creator,
-    tags,
+    ...post,
+    creator: req.userId,
+    createdAt: new Date().toISOString(),
   });
   try {
     await newPost.save();
@@ -70,17 +68,31 @@ export const likePost = async (req, res) => {
   const { id: _id } = req.params;
 
   try {
+    if (!req.userId)
+      return res.status(400).json({ message: "User not authorized" });
+
     if (!mongoose.Types.ObjectId.isValid(_id))
       return res.status(404).send("No Post found");
 
     const post = await PostMessage.findById(_id);
-    const updatedPost = await PostMessage.findByIdAndUpdate(
-      _id,
-      { likeCount: post.likeCount + 1 },
-      { new: true }
-    );
+
+    const index = post.likes.findIndex((id) => id === String(req.userId));
+
+    if (index === -1) {
+      // like the post
+      post.likes.push(req.userId);
+    } else {
+      // dislike the post
+
+      // filter method !== --> returns all the values which not matched/does not return the matched id(value)
+      post.likes = post.likes.filter((id) => id !== String(req.userId));
+    }
+    const updatedPost = await PostMessage.findByIdAndUpdate(_id, post, {
+      new: true,
+    });
     res.json(updatedPost);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
+    res.status(500).json({ message: error });
   }
 };
