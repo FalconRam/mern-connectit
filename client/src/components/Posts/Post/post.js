@@ -10,6 +10,9 @@ import {
 import { deletePost, likePost } from "../../../actions/posts";
 import { useDispatch } from "react-redux";
 import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
+import ThumbUpAltOutlined from "@material-ui/icons/ThumbUpAltOutlined";
+import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import DeleteIcon from "@material-ui/icons/Delete";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import moment from "moment";
@@ -22,6 +25,27 @@ const Post = ({ post, currentId, setCurrentId }) => {
 
   const updatePost = () =>
     user?.result._id === post.creator ? setCurrentId(post._id) : null;
+
+  const Likes = () => {
+    if (post) {
+      return post.likes.find(
+        (like) => like === (user?.result?._id || user?.result?.googleId)
+      ) ? (
+        <>
+          <FavoriteOutlinedIcon fontSize="small" style={{ color: "red" }} />
+          &nbsp;
+          {post.likes.length > 2
+            ? `You, ${post.likes.length - 1} others`
+            : `${post.likes.length} Like${post.likes.length > 1 ? "s" : ""}`}
+        </>
+      ) : (
+        <>
+          <FavoriteBorderOutlinedIcon fontSize="small" />
+          &nbsp;{post.likes.length} {post.likes.length <= 1 ? "Like" : "Likes"}
+        </>
+      );
+    }
+  };
 
   return (
     <Card className={classes.card}>
@@ -36,7 +60,8 @@ const Post = ({ post, currentId, setCurrentId }) => {
           {moment(post.createdAt).fromNow()}
         </Typography>
       </div>
-      {user?.result._id === post.creator ? (
+      {user?.result?._id === post.creator ||
+      user?.result?.googleId === post?.creator ? (
         <div className={classes.overlay2}>
           <Button style={{ color: "white" }} size="small" onClick={updatePost}>
             <MoreHorizIcon fontSize="medium" />
@@ -67,10 +92,13 @@ const Post = ({ post, currentId, setCurrentId }) => {
           color="primary"
           onClick={() => dispatch(likePost(post._id))}
         >
-          <ThumbUpAltIcon fontSize="small" />
-          &nbsp; Like &nbsp; {post.likeCount}
+          {/* <ThumbUpAltIcon fontSize="small" />
+          &nbsp; {post.likes.length === 1 ? "Like" : "Likes"} &nbsp;{" "}
+          {post.likes.length} */}
+          <Likes />
         </Button>
-        {user?.result._id === post.creator ? (
+        {user?.result?._id === post.creator ||
+        user?.result?.googleId === post?.creator ? (
           <Button
             size="small"
             color="primary"
