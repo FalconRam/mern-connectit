@@ -12,10 +12,26 @@ export const getPosts = async (req, res) => {
   }
 };
 
-export const getPostsById = async (req, res) => {
+export const getPostsBySearch = async (req, res) => {
+  const { searchQuery, tags } = req.query;
   try {
-    const postMessageById = await PostMessage.findById(req.params.id);
-    res.status(200).json(postMessageById);
+    const title = new RegExp(searchQuery, "i");
+
+    const postMessages = await PostMessage.find({
+      $or: [{ title }, { tags: { $in: tags.split(",") } }],
+    }); // query have two params, so we use either/or ($or),
+    // one is searchQuery and array of tags (is one of the tags in array of tags, equal to our tags )
+    res.status(200).json({ data: postMessages });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const getPostsById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const postMessageById = await PostMessage.findById(id);
+    res.status(200).json({ data: postMessageById });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }

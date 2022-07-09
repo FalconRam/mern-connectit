@@ -1,43 +1,128 @@
 import React, { useState, useEffect } from "react";
-import { Container, Grow, Grid } from "@material-ui/core";
+import {
+  Container,
+  Grow,
+  Grid,
+  Paper,
+  AppBar,
+  TextField,
+  Button,
+} from "@material-ui/core";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
+import ChipInput from "material-ui-chip-input";
+
 import Posts from "../Posts/posts";
 import Form from "../Form/form";
-import { getPosts } from "../../actions/posts";
+import { getPosts, getPostsBySearch } from "../../actions/posts";
+import Pagination from "../Pagination/pagination";
 
 import useStyles from "./styles";
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 const Home = () => {
   const classes = useStyles();
   const history = useHistory();
-  const user = localStorage.getItem("profile");
-  const [currentId, setCurrentId] = useState(null);
   const dispatch = useDispatch();
+  const query = useQuery();
+
+  const user = JSON.parse(localStorage.getItem("profile"));
+  const [currentId, setCurrentId] = useState(null);
+  const [search, setSearch] = useState("");
+  const [tags, setTags] = useState([]);
+
+  const page = query.get("page") || 1;
+  const searchQuery = query.get("searchQuery");
 
   if (!user) {
     history.push("/auth");
   }
-  
+
   useEffect(() => {
     dispatch(getPosts());
   }, [currentId, dispatch]);
 
+  const searchPost = () => {
+    if (search.trim() || tags) {
+      dispatch(getPostsBySearch({ search, tags: tags.join(",") }));
+      history.push(
+        `/posts/search?searchQuery=${search || "none"}&tags=${
+          tags.join(",") || "none"
+        }`
+      );
+    } else {
+      history.push("/");
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.keyCode === 13) {
+      searchPost();
+    }
+  };
+
+  const handleAdd = (tag) => {
+    setTags([...tags, tag]);
+  };
+
+  const handleDelete = (tagToDelete) => {
+    setTags(tags.filter((tag) => tag !== tagToDelete));
+  };
+
   return (
     <Grow in>
-      <Container>
+      <Container maxWidth="xl">
         <Grid
-          className={classes.mainContainer}
+          className={classes.gridContainer}
           container
           justifyContent="space-between"
           align="stretch"
           spacing={3}
         >
-          <Grid item xs={12} sm={7}>
+          <Grid item xs={12} sm={6} md={9}>
             <Posts currentId={currentId} setCurrentId={setCurrentId} />
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={6} md={3}>
+            <AppBar
+              className={classes.appBarSearch}
+              position="static"
+              color="inherit"
+            >
+              <TextField
+                name="search"
+                variant="outlined"
+                label="Search"
+                fullWidth
+                value={search}
+                onKeyPress={handleKeyPress}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <ChipInput
+                style={{ margin: "10px 0" }}
+                value={tags}
+                onAdd={handleAdd}
+                onDelete={handleDelete}
+                label="Search Tags"
+                variant="outlined"
+                onKeyPress={handleKeyPress}
+                onChange={(e) => setTags(e.target.value)}
+              />
+              <Button
+                onClick={searchPost}
+                className={classes.searchButton}
+                color="primary"
+                variant="contained"
+              >
+                Search
+              </Button>
+            </AppBar>
             <Form currentId={currentId} setCurrentId={setCurrentId} />
+            <Paper className={classes.pagination} elevation={6}>
+              <Pagination />
+            </Paper>
           </Grid>
         </Grid>
       </Container>

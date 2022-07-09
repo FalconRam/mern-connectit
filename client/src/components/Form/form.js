@@ -10,14 +10,13 @@ import { createPost, updatePost } from "../../actions/posts";
 const Form = ({ currentId, setCurrentId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  
+
   const user = JSON.parse(localStorage.getItem("profile"));
 
   // Gets the Post by ID that is clicked to Edit
   const post = useSelector((state) =>
     currentId ? state.posts.find((p) => p._id === currentId) : null
   );
-
 
   const [postData, setPostData] = useState({
     title: "",
@@ -55,7 +54,7 @@ const Form = ({ currentId, setCurrentId }) => {
   };
 
   return (
-    <Paper className={classes.paper}>
+    <Paper className={classes.paper} elevation={6}>
       <form
         autoComplete="off"
         noValidate
@@ -78,6 +77,8 @@ const Form = ({ currentId, setCurrentId }) => {
           variant="outlined"
           label="Caption"
           fullWidth
+          multiline
+          minrows={3}
           value={postData.message}
           onChange={(e) =>
             setPostData({ ...postData, message: e.target.value })
