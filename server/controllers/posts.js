@@ -21,6 +21,9 @@ export const getPostsBySearch = async (req, res) => {
       $or: [{ title }, { tags: { $in: tags.split(",") } }],
     }); // query have two params, so we use either/or ($or),
     // one is searchQuery and array of tags (is one of the tags in array of tags, equal to our tags )
+
+    if (searchQuery === "none" && tags === "none") postMessages = getPosts();
+
     res.status(200).json({ data: postMessages });
   } catch (error) {
     res.status(400).json({ message: error.message });
