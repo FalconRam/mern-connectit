@@ -35,7 +35,7 @@ const Navbar = () => {
   return (
     <AppBar className={classes.appBar} position="static" color="inherit">
       <div className={classes.brandContainer}>
-        <img className={classes.image} src={logo} alt="connectit" height="40" />
+        <img className={classes.image} src={logo} alt="connectit" height="40px" />
         <Typography
           component={Link}
           to={user ? "/" : "/auth"}
