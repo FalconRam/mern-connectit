@@ -77,12 +77,12 @@ const Auth = () => {
   const googleSuccess = async (res) => {
   
     //{clientId, credential : { token, data, signature}, select_by} = res
-    console.log(res);
+    // console.log(res);
 
     const result = jwt_decode(res.credential);
-    console.log(result);
+    // console.log(result);
     const token = res.credential.substr(0, 102);
-    console.log(token);
+    // console.log(token);
 
     try {
       dispatch({
