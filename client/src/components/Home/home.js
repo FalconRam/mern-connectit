@@ -41,10 +41,6 @@ const Home = () => {
     history.push("/auth");
   }
 
-  useEffect(() => {
-    dispatch(getPosts());
-  }, [currentId, dispatch]);
-
   const searchPost = () => {
     if (search.trim() || tags) {
       dispatch(getPostsBySearch({ search, tags: tags.join(",") }));
@@ -97,17 +93,17 @@ const Home = () => {
                 label="Search"
                 fullWidth
                 value={search}
-                onKeyPress={handleKeyPress}
+                onKeyPress={(e) => handleKeyPress(e)}
                 onChange={(e) => setSearch(e.target.value)}
               />
               <ChipInput
                 style={{ margin: "10px 0" }}
                 value={tags}
-                onAdd={handleAdd}
-                onDelete={handleDelete}
+                onAdd={(e) => handleAdd(e)}
+                onDelete={(e) => handleDelete(e)}
                 label="Search Tags"
                 variant="outlined"
-                onKeyPress={handleKeyPress}
+                onKeyPress={(e) => handleKeyPress(e)}
                 onChange={(e) => setTags(e.target.value)}
               />
               <Button
@@ -120,9 +116,11 @@ const Home = () => {
               </Button>
             </AppBar>
             <Form currentId={currentId} setCurrentId={setCurrentId} />
-            <Paper className={classes.pagination} elevation={6}>
-              <Pagination />
-            </Paper>
+            {!searchQuery && !tags.length && (
+              <Paper className={classes.pagination} elevation={6}>
+                <Pagination currentId={currentId} page={page} />
+              </Paper>
+            )}
           </Grid>
         </Grid>
       </Container>

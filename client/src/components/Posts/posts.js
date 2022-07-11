@@ -7,10 +7,11 @@ import useStyles from "./styles";
 
 const Posts = ({ currentId, setCurrentId }) => {
   const classes = useStyles();
-  const posts = useSelector((state) => state.posts);
+  const { posts, isLoading } = useSelector((state) => state.posts);
 
+  if (!posts?.length && !isLoading) return "No Posts";
   // console.log(posts);
-  return !posts.length ? (
+  return isLoading ? (
     <div className="center">
       <div className="spinner" />
     </div>

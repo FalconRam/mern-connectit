@@ -75,7 +75,6 @@ const Auth = () => {
   };
 
   const googleSuccess = async (res) => {
-  
     //{clientId, credential : { token, data, signature}, select_by} = res
     // console.log(res);
 

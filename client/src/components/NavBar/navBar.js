@@ -15,7 +15,7 @@ const Navbar = () => {
   const location = useLocation();
 
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
-  console.log(user);
+  // console.log(user);
 
   useEffect(() => {
     const token = user?.token;
@@ -35,7 +35,12 @@ const Navbar = () => {
   return (
     <AppBar className={classes.appBar} position="static" color="inherit">
       <div className={classes.brandContainer}>
-        <img className={classes.image} src={logo} alt="connectit" height="40px" />
+        <img
+          className={classes.image}
+          src={logo}
+          alt="connectit"
+          height="40px"
+        />
         <Typography
           component={Link}
           to={user ? "/" : "/auth"}
@@ -63,7 +68,7 @@ const Navbar = () => {
               variant="contained"
               className={classes.logout}
               color="secondary"
-              onClick={logout}
+              onClick={() => logout()}
             >
               Logout
             </Button>
