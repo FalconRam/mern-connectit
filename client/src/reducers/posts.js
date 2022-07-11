@@ -1,6 +1,7 @@
 import {
   FETCH_ALL_POSTS,
   FETCH_BY_SEARCH,
+  FETCH_POST_BY_ID,
   CREATE_POST,
   UPDATE_OR_LIKE_POST,
   DELETE_POST,
@@ -21,6 +22,8 @@ export default (state = { posts: [], isLoading: true }, action) => {
         currentPage: action.payload.currentPage,
         numberOfPages: action.payload.numberOfPages,
       };
+    case FETCH_POST_BY_ID:
+      return { ...state, post: action.payload };
     case FETCH_BY_SEARCH:
       return { ...state, posts: action.payload };
     case CREATE_POST:

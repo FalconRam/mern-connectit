@@ -7,6 +7,7 @@ import {
   DELETE_POST,
   START_LOADING,
   END_LOADING,
+  FETCH_POST_BY_ID,
 } from "../constants/actionTypes";
 
 // Action Creators
@@ -16,6 +17,19 @@ export const getPosts = (page) => async (dispatch) => {
 
     const { data } = await api.fetchPosts(page);
     dispatch({ type: FETCH_ALL_POSTS, payload: data });
+
+    dispatch({ type: END_LOADING });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getPostById = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: START_LOADING });
+
+    const { data } = await api.fetchPostById(id);
+    dispatch({ type: FETCH_POST_BY_ID, payload: data });
 
     dispatch({ type: END_LOADING });
   } catch (error) {
@@ -38,20 +52,23 @@ export const getPostsBySearch = (search) => async (dispatch) => {
   }
 };
 
-export const createPost = (post) => async (dispatch) => {
+export const createPost = (post, history) => async (dispatch) => {
   try {
     dispatch({ type: START_LOADING });
 
     const { data } = await api.createPost(post);
+
+    history.push(`/posts/${data._id}`);
     dispatch({ type: CREATE_POST, payload: data });
   } catch (error) {
     console.log(error);
   }
 };
 
-export const updatePost = (id, post) => async (dispatch) => {
+export const updatePost = (id, post, history) => async (dispatch) => {
   try {
     const { data } = await api.updatePost(id, post);
+    history.push(`/posts/${id}`);
     dispatch({ type: UPDATE_OR_LIKE_POST, payload: data });
   } catch (error) {
     console.log(error);

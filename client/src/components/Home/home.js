@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Container,
   Grow,
@@ -14,7 +14,7 @@ import ChipInput from "material-ui-chip-input";
 
 import Posts from "../Posts/posts";
 import Form from "../Form/form";
-import { getPosts, getPostsBySearch } from "../../actions/posts";
+import { getPostsBySearch } from "../../actions/posts";
 import Pagination from "../Pagination/pagination";
 
 import useStyles from "./styles";
