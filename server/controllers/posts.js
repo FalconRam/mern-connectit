@@ -18,8 +18,7 @@ export const getPosts = async (req, res) => {
     const posts = await PostMessage.find()
       .sort({ _id: -1 })
       .limit(LIMIT)
-      .skip(startIndex)
-      .limit();
+      .skip(startIndex);
 
     res.status(200).json({
       data: posts,
