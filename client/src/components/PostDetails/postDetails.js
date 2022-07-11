@@ -33,7 +33,7 @@ const PostDetails = () => {
     history.push("/auth");
   }
 
-  if (!post && !isLoading) return "No Posts";
+  // if (!post) return "No Posts";
 
   const recommendedPosts = posts.filter(({ _id }) => _id !== post._id); // destructed the post to its _id
 
@@ -67,7 +67,7 @@ const PostDetails = () => {
           </Typography>
           <Divider style={{ margin: "20px 0" }} />
           <Typography variant="body1">
-            <strong>Realtime Chat - coming soon!</strong>
+            <strong></strong>
           </Typography>
           <Divider style={{ margin: "20px 0" }} />
           {/* <CommentSection post={post} /> */}
