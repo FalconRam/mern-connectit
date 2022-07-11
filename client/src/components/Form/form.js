@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Paper, Typography, TextField, Button } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import FileBase from "react-file-base64";
 import useStyles from "./styles";
 import { createPost, updatePost } from "../../actions/posts";
@@ -10,12 +11,13 @@ import { createPost, updatePost } from "../../actions/posts";
 const Form = ({ currentId, setCurrentId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const user = JSON.parse(localStorage.getItem("profile"));
 
   // Gets the Post by ID that is clicked to Edit
   const post = useSelector((state) =>
-    currentId ? state.posts.find((p) => p._id === currentId) : null
+    currentId ? state.posts.posts.find((p) => p._id === currentId) : null
   );
 
   const [postData, setPostData] = useState({
@@ -45,11 +47,15 @@ const Form = ({ currentId, setCurrentId }) => {
 
     if (currentId) {
       dispatch(
-        updatePost(currentId, { ...postData, name: user?.result?.name })
+        updatePost(
+          currentId,
+          { ...postData, name: user?.result?.name },
+          history
+        )
       );
       clear();
     } else {
-      dispatch(createPost({ ...postData, name: user?.result?.name }));
+      dispatch(createPost({ ...postData, name: user?.result?.name }, history));
       clear();
     }
   };
